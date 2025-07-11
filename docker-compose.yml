@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+      - node_modules:/var/www/html/node_modules
+    depends_on:
+      - database
+    environment:
+      - DB_HOST=database
+      - DB_DATABASE=products_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+    command: >
+      sh -c "
+        echo 'Waiting for MySQL...' &&
+        sleep 30 &&
+        composer install &&
+        if [ ! -f .env ]; then
+          cp .env.example .env;
+        fi &&
+        php artisan key:generate &&
+        php artisan migrate --force &&
+        npm install &&
+        npm run dev &&
+        php artisan serve --host=0.0.0.0 --port=8000"
+
+  database:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: products_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+  vendor:
+  node_modules:
