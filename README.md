@@ -1,64 +1,235 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# 🛍️ Product Management System - Laravel API
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📋 Project Description
 
-## About Laravel
+This project is a product management system developed with Laravel, offering a robust REST API for creating, viewing, and managing products and categories. The system uses a modular architecture with the Repository pattern and Services, ensuring clear separation of responsibilities and optimal maintainability.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Key Features:**
+- ✅ Product creation and listing
+- ✅ Category system with hierarchical support
+- ✅ Web interface/CLI commands for product management
+- ✅ Image upload 
+- ✅ Filtering and sorting
+- ✅ Complete unit and functional tests
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Technologies Used
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Backend
+- **Laravel 8.x** - Modern PHP framework
+- **PHP 7.4** - Server language
+- **MySQL 8.0** - Relational database
+- **PHPUnit** - Unit and functional testing
 
-## Learning Laravel
+### Frontend
+- **Vue.js 2.6** - Progressive JavaScript framework
+- **Bootstrap 4.6** - Responsive CSS framework
+- **Laravel Mix** - Build tool and asset compilation
+- **Axios** - HTTP client for API requests
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### DevOps & Tools
+- **Docker** - Containerization and deployment
+- **Docker Compose** - Multi-container orchestration
+- **Composer** - PHP dependency manager
+- **NPM** - JavaScript dependency manager
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## 📦 Installation and Setup
 
-### Premium Partners
+### Prerequisites
+- Docker and Docker Compose
+- Git
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### 1. Clone the Project
+```bash
+git clone <repository-url>
+cd coding-challenge
+```
 
-## Contributing
+### 2. Docker Launch (Recommended Method)
+```bash
+# Build and launch containers
+docker-compose up -d
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Application will be accessible at http://localhost:8000
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The Docker container automatically handles:
+- ✅ Composer dependencies installation
+- ✅ Environment configuration (.env)
+- ✅ Application key generation
+- ✅ Database migrations execution
+- ✅ Database seeding
+- ✅ NPM dependencies installation
+- ✅ Frontend assets compilation
 
-## Security Vulnerabilities
+### 3. Manual Installation (Alternative)
+```bash
+# Install PHP dependencies
+composer install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Configure environment
+cp .env.example .env
+php artisan key:generate
 
-## License
+# Configure database in .env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=products_db
+DB_USERNAME=root
+DB_PASSWORD=secret
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Run migrations and seeders
+php artisan migrate --seed
+
+# Install NPM dependencies and compile
+npm install
+npm run dev
+
+# Start development server
+php artisan serve
+```
+
+## 🎯 Implemented Features
+
+### 1. 🌐 Web Interface
+
+#### Product Viewing
+- **URL**: `http://localhost:8000/products`
+- **Features**:
+  - Complete product listing
+  - Associated categories display
+  - Responsive interface with Bootstrap
+
+#### Product Creation
+- **URL**: `http://localhost:8000/products/create`
+- **Features**:
+  - Complete creation form
+  - Client-side and server-side validation
+  - Image upload
+  - Multiple category selection
+
+
+### 2. 🖥️ Command Line Interface (CLI)
+
+#### Product Creation
+```bash
+# Create a product with all information
+php artisan product:create \
+  --name="MacBook Pro M3" \
+  --description="Professional laptop computer" \
+  --price=2499.99 \
+  --image="macbook-pro.jpg" \
+  --categories="1,2"
+```
+
+#### Product Viewing
+```bash
+# List all products
+php artisan product:create --list
+
+# Filter by category
+php artisan product:create --list --category-filter=1
+
+# Sort by price
+php artisan product:create --list --sort-price=desc
+
+# Combine filters and sorting
+php artisan product:create --list --category-filter=1 --sort-price=asc
+```
+
+**Example output:**
+```
++----+------------------+----------------------------------------+------------+------------------+----------+
+| ID | Name             | Description                            | Price      | Categories       | Created  |
++----+------------------+----------------------------------------+------------+------------------+----------+
+| 1  | iPhone 15 Pro    | Latest iPhone with Pro features       | 1 199,99 Dh| Electronics      | 11/07/25 |
+| 2  | MacBook Pro M3   | Professional laptop computer          | 2 499,99 Dh| Electronics      | 11/07/25 |
++----+------------------+----------------------------------------+------------+------------------+----------+
+```
+
+### 4. 🧪 Testing and Quality
+
+#### Running Tests
+```bash
+# All tests
+php artisan test
+
+# Specific tests
+php artisan test --filter=ProductCreationTest
+
+# Tests with coverage
+php artisan test --coverage
+```
+
+#### Available Test Types
+- **Unit Tests**: Models, Repositories, Services
+- **Functional Tests**: API, Complete workflows
+- **Integration Tests**: Database, Relations
+
+### 5. 📊 Data Management
+
+#### Available Seeders
+```bash
+# Complete test data
+php artisan db:seed
+
+# Specific seeder
+php artisan db:seed --class=ProductSeeder
+php artisan db:seed --class=CategorySeeder
+```
+
+#### Database Structure
+```sql
+-- Products table
+products: id, name, description, price, image, created_at, updated_at
+
+-- Categories table
+categories: id, name, parent_id, created_at, updated_at
+
+-- Pivot table (many-to-many)
+product_categories: product_id, category_id
+```
+
+## 🔧 Useful Commands
+
+### Development
+```bash
+# Restart containers
+docker-compose down && docker-compose up -d
+
+# Access application container
+docker-compose exec app bash
+
+# View logs
+docker-compose logs -f app
+
+# Rebuild assets
+npm run dev
+# or for production
+npm run prod
+```
+
+### Database
+```bash
+# Reset database
+php artisan migrate:fresh --seed
+
+# Create new migration
+php artisan make:migration create_new_table
+
+# Create new seeder
+php artisan make:seeder NewTableSeeder
+```
+
+### Cache and Optimization
+```bash
+# Clear cache
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+
+# Optimize for production
+php artisan optimize
+```
