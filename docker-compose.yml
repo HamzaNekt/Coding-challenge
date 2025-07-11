@@ -20,14 +20,13 @@ services:
       - DB_PASSWORD=secret
     command: >
       sh -c "
-        echo 'Waiting for MySQL...' &&
         sleep 30 &&
         composer install &&
-        if [ ! -f .env ]; then
-          cp .env.example .env;
-        fi &&
+        if [ ! -f .env ]; then cp .env.example .env; fi &&
         php artisan key:generate &&
         php artisan migrate --force &&
+        mysql -h database -u root -psecret -e 'CREATE DATABASE IF NOT EXISTS products_db_test;' &&
+        php artisan migrate --env=testing --force &&
         npm install &&
         npm run dev &&
         php artisan serve --host=0.0.0.0 --port=8000"

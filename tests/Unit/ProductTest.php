@@ -1,0 +1,112 @@
+<?php
+
+namespace Tests\Unit;
+
+use App\Models\Product;
+use App\Models\Category;
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class ProductTest extends TestCase
+{
+    use RefreshDatabase;
+
+  
+    public function test_product_can_be_created_with_valid_data()
+    {
+        $productData = [
+            'name' => 'iPhone 15',
+            'description' => 'Latest iPhone model',
+            'price' => 999.99,
+            'image' => 'iphone15.jpg'
+        ];
+
+        $product = Product::create($productData);
+
+        $this->assertInstanceOf(Product::class, $product);
+        $this->assertEquals('iPhone 15', $product->name);
+        $this->assertEquals(999.99, $product->price);
+        $this->assertDatabaseHas('products', $productData);
+    }
+
+   
+    public function test_product_price_is_cast_to_decimal()
+    {
+        $product = Product::create([
+            'name' => 'Test Product',
+            'description' => 'Test description',
+            'price' => '19.99'
+        ]);
+
+        $this->assertIsFloat($product->price);
+        $this->assertEquals(19.99, $product->price);
+    }
+
+ 
+    public function test_product_formatted_price_accessor()
+    {
+        $product = Product::create([
+            'name' => 'Test Product',
+            'description' => 'Test description',
+            'price' => 19.99
+        ]);
+
+        $this->assertEquals('19,99 Dh', $product->formatted_price);
+    }
+
+    
+    public function test_product_can_have_categories()
+    {
+        $product = Product::create([
+            'name' => 'Test Product',
+            'description' => 'Test description',
+            'price' => 99.99
+        ]);
+
+        $category = Category::create(['name' => 'Electronics']);
+        
+        $product->categories()->attach($category->id);
+
+        $this->assertTrue($product->hasCategories());
+        $this->assertEquals(1, $product->categories()->count());
+        $this->assertEquals('Electronics', $product->categories->first()->name);
+    }
+
+   
+    public function test_product_scope_by_category()
+    {
+        $category = Category::create(['name' => 'Electronics']);
+        
+        $product1 = Product::create([
+            'name' => 'iPhone',
+            'description' => 'Smartphone',
+            'price' => 999.99
+        ]);
+        
+        $product2 = Product::create([
+            'name' => 'Laptop',
+            'description' => 'Computer',
+            'price' => 1299.99
+        ]);
+
+        $product1->categories()->attach($category->id);
+
+        $productsInCategory = Product::byCategory($category->id)->get();
+
+        $this->assertEquals(1, $productsInCategory->count());
+        $this->assertEquals('iPhone', $productsInCategory->first()->name);
+    }
+
+    
+    public function test_product_scope_by_price_range()
+    {
+        Product::create(['name' => 'Cheap Product', 'description' => 'Test', 'price' => 10.00]);
+        Product::create(['name' => 'Medium Product', 'description' => 'Test', 'price' => 50.00]);
+        Product::create(['name' => 'Expensive Product', 'description' => 'Test', 'price' => 100.00]);
+
+        $productsInRange = Product::byPriceRange(25, 75)->get();
+
+        $this->assertEquals(1, $productsInRange->count());
+        $this->assertEquals('Medium Product', $productsInRange->first()->name);
+    }
+}

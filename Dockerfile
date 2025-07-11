@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nodejs \
     npm \
+    default-mysql-client \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
