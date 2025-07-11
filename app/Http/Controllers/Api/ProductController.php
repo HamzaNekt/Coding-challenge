@@ -33,10 +33,19 @@ class ProductController extends Controller
     }
 
     
-    public function store(StoreProductRequest $request): JsonResponse
+     public function store(StoreProductRequest $request): JsonResponse
     {
         try {
-            $product = $this->productService->createProduct($request->validated());
+            $data = $request->validated();
+            
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $fileName = time() . '_' . $image->getClientOriginalName();
+                $imagePath = $image->storeAs('products', $fileName, 'public');
+                $data['image'] = $imagePath;
+            }
+
+            $product = $this->productService->createProduct($data);
 
             return response()->json([
                 'success' => true,
