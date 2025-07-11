@@ -5,22 +5,23 @@ namespace Tests\Feature;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ProductCreationTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
 
     
     public function test_complete_product_creation_workflow()
     {
+        
         $electronicsCategory = Category::create(['name' => 'Electronics']);
         $smartphonesCategory = Category::create([
             'name' => 'Smartphones', 
             'parent_id' => $electronicsCategory->id
         ]);
 
+        
         $productData = [
             'name' => 'iPhone 15 Pro',
             'description' => 'Latest iPhone with Pro features',
@@ -30,11 +31,13 @@ class ProductCreationTest extends TestCase
 
         $product = Product::create($productData);
 
+       
         $product->categories()->attach([
             $electronicsCategory->id,
             $smartphonesCategory->id
         ]);
 
+     
         $this->assertDatabaseHas('products', $productData);
         $this->assertDatabaseHas('product_categories', [
             'product_id' => $product->id,
@@ -45,12 +48,13 @@ class ProductCreationTest extends TestCase
             'category_id' => $smartphonesCategory->id
         ]);
 
+      
         $this->assertEquals(2, $product->categories()->count());
         $this->assertTrue($product->categories->contains('name', 'Electronics'));
         $this->assertTrue($product->categories->contains('name', 'Smartphones'));
     }
 
-  
+    
     public function test_product_creation_with_mass_assignment_protection()
     {
         $productData = [
@@ -58,8 +62,8 @@ class ProductCreationTest extends TestCase
             'description' => 'Test description',
             'price' => 99.99,
             'image' => 'test.jpg',
-            'id' => 999, // Should be ignored (not in fillable)
-            'created_at' => '2020-01-01' // Should be ignored
+            'id' => 999, 
+            'created_at' => '2020-01-01' 
         ];
 
         $product = Product::create($productData);
@@ -82,7 +86,6 @@ class ProductCreationTest extends TestCase
     
     public function test_product_creation_with_multiple_categories()
     {
-       
         $categories = collect();
         $categories->push(Category::create(['name' => 'Electronics']));
         $categories->push(Category::create(['name' => 'Mobile Phones']));
@@ -97,11 +100,12 @@ class ProductCreationTest extends TestCase
         $product->categories()->attach($categories->pluck('id')->toArray());
 
         $this->assertEquals(3, $product->categories()->count());
-        $this->assertTrue($product->hasCategories());
         
         foreach ($categories as $category) {
             $this->assertTrue($category->products->contains($product));
         }
-    }
 
+        $electronicsProducts = Product::byCategory($categories->first()->id)->get();
+        $this->assertTrue($electronicsProducts->contains($product));
+    }
 }

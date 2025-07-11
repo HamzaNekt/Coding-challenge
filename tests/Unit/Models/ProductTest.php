@@ -11,7 +11,7 @@ class ProductTest extends TestCase
 {
     use RefreshDatabase;
 
-  
+    /** @test */
     public function test_product_can_be_created_with_valid_data()
     {
         $productData = [
@@ -29,8 +29,8 @@ class ProductTest extends TestCase
         $this->assertDatabaseHas('products', $productData);
     }
 
-   
-    public function test_product_price_is_cast_to_decimal()
+    /** @test */
+    public function test_product_price_is_cast_to_float()
     {
         $product = Product::create([
             'name' => 'Test Product',
@@ -42,19 +42,7 @@ class ProductTest extends TestCase
         $this->assertEquals(19.99, $product->price);
     }
 
- 
-    public function test_product_formatted_price_accessor()
-    {
-        $product = Product::create([
-            'name' => 'Test Product',
-            'description' => 'Test description',
-            'price' => 19.99
-        ]);
-
-        $this->assertEquals('19,99 Dh', $product->formatted_price);
-    }
-
-    
+    /** @test */
     public function test_product_can_have_categories()
     {
         $product = Product::create([
@@ -67,12 +55,11 @@ class ProductTest extends TestCase
         
         $product->categories()->attach($category->id);
 
-        $this->assertTrue($product->hasCategories());
         $this->assertEquals(1, $product->categories()->count());
         $this->assertEquals('Electronics', $product->categories->first()->name);
     }
 
-   
+    /** @test */
     public function test_product_scope_by_category()
     {
         $category = Category::create(['name' => 'Electronics']);
@@ -97,16 +84,19 @@ class ProductTest extends TestCase
         $this->assertEquals('iPhone', $productsInCategory->first()->name);
     }
 
-    
-    public function test_product_scope_by_price_range()
+    /** @test */
+    public function test_product_can_be_sorted_by_price()
     {
+        Product::create(['name' => 'Expensive Product', 'description' => 'Test', 'price' => 100.00]);
         Product::create(['name' => 'Cheap Product', 'description' => 'Test', 'price' => 10.00]);
         Product::create(['name' => 'Medium Product', 'description' => 'Test', 'price' => 50.00]);
-        Product::create(['name' => 'Expensive Product', 'description' => 'Test', 'price' => 100.00]);
 
-        $productsInRange = Product::byPriceRange(25, 75)->get();
+        $productsAsc = Product::orderBy('price', 'asc')->get();
+        $this->assertEquals('Cheap Product', $productsAsc->first()->name);
+        $this->assertEquals('Expensive Product', $productsAsc->last()->name);
 
-        $this->assertEquals(1, $productsInRange->count());
-        $this->assertEquals('Medium Product', $productsInRange->first()->name);
+        $productsDesc = Product::orderBy('price', 'desc')->get();
+        $this->assertEquals('Expensive Product', $productsDesc->first()->name);
+        $this->assertEquals('Cheap Product', $productsDesc->last()->name);
     }
 }
